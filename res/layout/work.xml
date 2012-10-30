@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="310dip"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dip"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/work_front"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="2dip"
+            android:layout_weight="1"
+            android:background="#333333"
+            android:gravity="left"
+            android:textColor="#aaaaaa"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/work_next"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="2dip"
+            android:layout_weight="1"
+            android:background="#333333"
+            android:gravity="right"
+            android:textColor="#aaaaaa"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dip"
+        android:layout_marginTop="15dip"
+        android:background="#aaaaaa" />
+
+    <EditText
+        android:id="@+id/work_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dip"
+        android:background="@android:drawable/editbox_background_normal"
+        android:hint="@string/work_name"
+        android:inputType="text"
+        android:textSize="20sp" />
+
+    <EditText
+        android:id="@+id/company_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dip"
+        android:background="@android:drawable/editbox_background_normal"
+        android:hint="@string/work_company"
+        android:inputType="text"
+        android:textSize="20sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dip"
+        android:layout_marginTop="15dip"
+        android:background="#aaaaaa" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left|center"
+        android:layout_marginLeft="10dip"
+        android:text="@string/time_time_score"
+        android:textSize="20sp" />
+
+    <EditText
+        android:id="@+id/time_time_score_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dip"
+        android:background="@android:drawable/editbox_background_normal"
+        android:inputType="date"
+        android:textSize="20sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dip"
+        android:layout_marginTop="15dip"
+        android:background="#aaaaaa" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" 
+        android:gravity="center"
+        android:layout_marginTop="40dip">
+
+        <Button
+            android:id="@+id/work_new"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="100dip"
+            android:background="@android:drawable/ic_input_add" />
+
+        <Button
+            android:id="@+id/work_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="100dip"
+            android:background="@android:drawable/ic_delete" />
+    </LinearLayout>
+</LinearLayout>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">MyResume</string>
+    <string name="title_activity_resume">Resume</string>
+    <string name="base">基本信息</string>
+    <string name="skill">能力情况</string>
+    <string name="work">工作经历</string>
+    <string name="want">求职需求</string>
+    <string name="finish">完成</string>
+    <string name="open">打开</string>
+    <string name="name">姓名:</string>
+    <string name="birthday">出生日期</string>
+    <string name="phone">手机号码:</string>
+    <string name="address">家庭住址:</string>
+    <string name="time">时间:</string>
+    <string name="skill_name">技能名称:</string>
+    <string name="time_scores">时间-分数</string>
+    <string name="work_name">工作:</string>
+    <string name="work_company">公司:</string>
+    <string name="time_time_score">Time-Time-Score:</string>
+    <string name="job">职务:</string>
+    <string name="salary">薪水:</string>
+    <string name="holiday">假期:</string>
+    <string name="h_addr">中国浙江杭州</string>
+    <string name="h_time_score">201106.09 201206.10</string>
+    <string name="set">设置</string>
+    <string name="cancel">取消</string>
+    <string name="dialog_title">年-月-分数</string>
+	<string name="this_phone">本机号码</string>
+	<string name ="chang_color">Color</string>
+	<string name="change_textsize">Size</string>
+	<string name="add_remark">Remark</string>
+	<string name="description">Users photo</string>
+	<string name="sub">登陆</string>
+	<string name="register"> <a href="http://www.google.com">注册>></a></string>
+	<string name="usr">用户名：</string>
+	<string name="password">密码：</string>
+	<string name="menu_settings">menu</string>
+	<string name="save">保存</string>
+</resources>
