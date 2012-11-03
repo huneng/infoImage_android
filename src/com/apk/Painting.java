@@ -13,6 +13,7 @@ import com.paint.*;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -21,6 +22,7 @@ import android.graphics.Paint;
 import android.graphics.PointF;
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -39,19 +41,19 @@ public class Painting extends Activity implements
 	Paint mPaint;
 	MyView mv;
 	MyJson myjson;
-	Button colorBtn, sizeBtn;
+	Button colorBtn, sizeBtn, arcButton;
 	private boolean flag;
 
-	@SuppressWarnings("deprecation")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		flag = false;
 		myjson = InputInterface.resume.myData;
-		height = getWindowManager().getDefaultDisplay().getHeight();
-		width = getWindowManager().getDefaultDisplay().getWidth();
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+		width = InputInterface.width;
+		height = InputInterface.height;
 
 		title = "";
 		mPaint = new Paint();
@@ -59,6 +61,14 @@ public class Painting extends Activity implements
 		mPaint.setAntiAlias(false);
 		mPaint.setStrokeWidth(2);
 		initView();
+	}
+
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			this.finish();
+		}
+		return super.onKeyDown(keyCode, event);
 	}
 
 	private void initView() {
@@ -96,10 +106,24 @@ public class Painting extends Activity implements
 			}
 		});
 
+		arcButton = new Button(this);
+		arcButton.setText("Next");
+		arcButton.setLayoutParams(new LayoutParams(140, 50));
+		arcButton.setTextSize(10);
+		arcButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent();
+				intent.setClass(Painting.this, ArcGraph.class);
+				startActivity(intent);
+			}
+		});
+
 		btnLayout.setGravity(Gravity.CENTER);
 		btnLayout.setOrientation(LinearLayout.HORIZONTAL);
 		btnLayout.addView(colorBtn);
 		btnLayout.addView(sizeBtn);
+		btnLayout.addView(arcButton);
 		btnLayout.setBackgroundColor(Color.GRAY);
 		layout.setOrientation(LinearLayout.VERTICAL);
 		layout.addView(mv);
@@ -252,7 +276,7 @@ public class Painting extends Activity implements
 				} else if (rectAxis.contains(curPoint.x, curPoint.y)) {
 					String text = rectAxis.inverseMap(curPoint.x, curPoint.y)
 							.changeToString();
-					canvas.drawText(text, curPoint.x - 100, curPoint.y+20,
+					canvas.drawText(text, curPoint.x - 100, curPoint.y + 20,
 							textPaint);
 				}
 			}
@@ -348,12 +372,13 @@ public class Painting extends Activity implements
 
 		void changeSkillDataToLine() {
 			int size = paintdata.skills.size();
+			colorIndex = 0;
 			for (int i = 0; i < size; i++) {
 				Paint lineP = new Paint();
 				lineP.setColor(color[colorIndex++]);
 				lineP.setStrokeWidth(2);
 				SkillData skill = paintdata.skills.get(i);
-				float x0 = i * 20 + 20;
+				float x0 = i * 30 + 20;
 				float y0 = lineAxis.top + 20;
 				float x_ = i * 20 + 20;
 				float y_ = -1;
@@ -370,8 +395,7 @@ public class Painting extends Activity implements
 					pt = lineAxis.map(timeScore);
 					x2 = pt.x;
 					y2 = pt.y;
-
-					lines.add(new Line(x1, y1, x2, y2, mPaint));
+					lines.add(new Line(x1, y1, x2, y2, lineP));
 					if (y_ == -1) {
 						LineEquation equation = new LineEquation(x1, y1, x2, y2);
 						y_ = equation.getPoint_of_intersection(x_);
@@ -418,8 +442,8 @@ public class Painting extends Activity implements
 				float y2 = point.y;
 				histograms.add(new Histogram(x1, rectAxis.top, x2, y2,
 						rectPaint));
-				texts.add(new Text(work.getName()+work.getCompany()).setPaint(textPaint)
-						.setLocation(x1 + 5, y1 + 10));
+				texts.add(new Text(work.getName() + work.getCompany())
+						.setPaint(textPaint).setLocation(x1 + 5, y1 + 10));
 			}
 		}
 
@@ -511,13 +535,14 @@ public class Painting extends Activity implements
 			String str = new String(title);
 			title = "";
 			WorkData work = new WorkData();
-			try{
-			work.setName(str.substring(0, str.indexOf(',')));
-			work.setCompany(str.substring(str.indexOf(',')+1));}
-			catch(Exception e){
+			try {
+				work.setName(str.substring(0, str.indexOf(',')));
+				work.setCompany(str.substring(str.indexOf(',') + 1));
+			} catch (Exception e) {
 				point1.set(0, 0);
 				point2.set(0, 0);
-				Toast.makeText(getApplicationContext(), "Dialog input wrong", Toast.LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), "Dialog input wrong",
+						Toast.LENGTH_SHORT).show();
 				return;
 			}
 			TimeScore t = rectAxis.inverseMap(point1.x, point1.y);
@@ -541,5 +566,4 @@ public class Painting extends Activity implements
 
 		}
 	}
-
 }

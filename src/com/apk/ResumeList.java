@@ -32,7 +32,7 @@ public class ResumeList extends ListActivity {
 		String username = intent.getStringExtra("username");
 		String password = intent.getStringExtra("password");
 
-		String site = "http://192.168.1.112:8080";
+		String site = "http://192.168.1.109:8080";
 		hw = new HttpWork();
 		hw.setSite(site);
 		hw.setUser(username, password);
@@ -89,6 +89,7 @@ public class ResumeList extends ListActivity {
 		} else {
 			int resumeid = Integer.parseInt(idlist.get(position));
 			resume = hw.getResume(resumeid);
+
 			try {
 				JSONObject object = new JSONObject(resume);
 				object.put("id", resumeid);

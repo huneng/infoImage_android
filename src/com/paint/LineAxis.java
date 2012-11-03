@@ -6,7 +6,6 @@ public class LineAxis {
 	public int left, top, right, bottom;
 	public int x0, y0;
 	public float unit_w, unit_h;
-
 	public LineAxis(int l, int t, int r, int b, float uw, float uh, int x, int y) {
 		left = l;
 		top = t;

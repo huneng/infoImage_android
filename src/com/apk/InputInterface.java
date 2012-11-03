@@ -32,11 +32,14 @@ public class InputInterface extends TabActivity implements OnGestureListener {
 	public MyJson myData;
 	public Bitmap photo;
 	private HttpWork hw;
-
+	public static int width, height;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		// init window titlebar
+
+		height = getWindowManager().getDefaultDisplay().getHeight();
+		width = getWindowManager().getDefaultDisplay().getWidth();
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		getWindow().requestFeature(Window.FEATURE_NO_TITLE);

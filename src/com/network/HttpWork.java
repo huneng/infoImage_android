@@ -2,6 +2,7 @@ package com.network;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -68,9 +69,11 @@ public class HttpWork {
 		return result;
 	}
 
-	@SuppressWarnings("deprecation")
 	public String pushResume(String data) {
-		data = URLEncoder.encode(data);
+		try {
+			data = URLEncoder.encode(data, "UTF-8");
+		} catch (UnsupportedEncodingException e1) {
+		}
 		String url = site + "/android/pushresume/" + data;
 		String r = "";
 		try {
@@ -82,10 +85,12 @@ public class HttpWork {
 		return r;
 	}
 
-	@SuppressWarnings("deprecation")
 	public String update(String data) {
 		String r = "";
-		data = URLEncoder.encode(data);
+		try {
+			data = URLEncoder.encode(data, "UTF-8");
+		} catch (UnsupportedEncodingException e1) {
+		}
 		String url = site + "/android/update/" + data;
 		try {
 			r = contactWithServer(url);
@@ -107,6 +112,7 @@ public class HttpWork {
 		URL url = new URL(myUrl);
 		String result = "";
 		HttpURLConnection con = (HttpURLConnection) url.openConnection();
+		
 		InputStream in = con.getInputStream();
 		StringBuffer buffer = new StringBuffer();
 		int length = con.getContentLength();

@@ -25,12 +25,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ResumeList"></activity>
+        <activity android:name=".ResumeList" />
         <activity android:name=".InputInterface" />
         <activity android:name=".Skill" />
         <activity android:name=".Base" />
         <activity android:name=".Work" />
         <activity android:name=".Painting" />
+        <activity android:name=".ArcGraph" >
+        </activity>
     </application>
 
 </manifest>
