@@ -6,50 +6,71 @@ public class LineAxis {
 	public int left, top, right, bottom;
 	public int x0, y0;
 	public float unit_w, unit_h;
-	public LineAxis(int l, int t, int r, int b, float uw, float uh, int x, int y) {
+	public float xCount, yCount;
+	private float xmapco, ymapco;
+	private int width, height;
+	public LineAxis(int l, int t, int r, int b, int xCount, int yCount,
+			int x, int y) {
 		left = l;
 		top = t;
 		right = r;
 		bottom = b;
 		x0 = x;
 		y0 = y;
-		unit_w = uw;
-		unit_h = uh;
+
+		this.xCount = xCount;
+		this.yCount = yCount;
+		
+		width = r-l;
+		height = b-t;
+		
+		xmapco = this.xCount/width;
+		ymapco = this.yCount/height;
 	}
 
-	public TimeScore inversemap(float x, float y) {
-		float t = (x - left) / unit_w;
-		int year = (int) t;
-		int month = (int) ((t - year) * 12 + 1);
-
-		year = year + x0;
+	public TimeScore map(float x, float y) {
+		float x_ = x - left;
+		float y_ = y - top;
+		float x1 = x_ * xmapco;
+		float y1 = y_ * ymapco;
+		int year = (int) x1;
+		int month = (int) ((x1 - year) * 12 + 1);
 		if (month > 12) {
 			month = 1;
 			year++;
 		}
-		int score = (int) ((bottom - y) / unit_h);
+		year += x0;
+		float t =(yCount - y1+1);
+		
+		int score = (int) t ;
+		if(t-score>=0.5)
+			score++;
+		score += y0;
+		return new TimeScore(year, month, score);
 
-		TimeScore r = new TimeScore(year, month, score);
-		return r;
 	}
 
-	public boolean contains(float x, float y){
-		if(x>left&&x<right&&y<bottom&&y>top)
+	public PointF inverseMap(TimeScore timescore) {
+		int year = timescore.year;
+		int month = timescore.month;
+		int score = timescore.score;
+		month = month - 1;
+		if (month < 0) {
+			month = 1;
+			year--;
+		}
+		float x = year + ((float) month) / 12-this.x0;
+		x = x / xmapco;
+		float y = y0+yCount - score;
+		y = y / ymapco+top;
+		PointF p = new PointF(x, y);
+		return p;
+	}
+	
+	public boolean contains(float x, float y) {
+		if (x > left && x < right && y < bottom && y > top)
 			return true;
 		return false;
-				
-	}
-	public PointF map(TimeScore t) {
-		float x, y;
-		x = t.year - x0;
-		x += ((float)t.month - 1) / 12;
-		y = t.score - y0;
 
-		x *= unit_w;
-		y *= unit_h;
-		x += left;
-		y = bottom-y;
-		PointF point = new PointF(x, y);
-		return point;
 	}
 }

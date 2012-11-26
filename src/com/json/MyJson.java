@@ -8,7 +8,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class MyJson {
-	public String name, birth, phone, address, job, salary, holiday;
+	public String name, birth, phone, address, job, salary, holiday, sex;
 	public List<SkillData> skills;
 	public List<WorkData> works;
 	public int starttime, endtime;
@@ -26,6 +26,7 @@ public class MyJson {
 		job = "programmer";
 		holiday = "10 day";
 		salary = "10000 dollar";
+		sex="male";
 		starttime = 2010;
 		endtime = 2014;
 		skills = new LinkedList<SkillData>();
@@ -69,10 +70,6 @@ public class MyJson {
 		return new String(str);
 	}
 
-	public MyJson(String str) {
-
-	}
-
 	public MyJson(JSONObject object) throws JSONException {
 
 		skills = new LinkedList<SkillData>();
@@ -83,8 +80,10 @@ public class MyJson {
 
 		JSONObject base = object.getJSONObject("fundamental");
 		name = base.getString("people");
+		sex = base.getString("sex");
 		birth = base.getString("birth");
 		phone = base.getString("phone");
+		
 		address = base.getString("address");
 		starttime = base.getInt("starttime");
 		endtime = base.getInt("endtime");
@@ -119,6 +118,7 @@ public class MyJson {
 		JSONObject resume = new JSONObject();
 		JSONObject base = new JSONObject();
 		base.put("people", name);
+		base.put("sex", sex);
 		base.put("birth", birth);
 		base.put("phone", phone);
 		base.put("address", address);

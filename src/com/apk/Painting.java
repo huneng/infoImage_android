@@ -166,14 +166,13 @@ public class Painting extends Activity implements
 		int startValue, endValue;
 		PointF point1, point2, curPoint;
 		Paint textPaint, rectPaint;
-		int colorIndex;
-		int color[] = { 0xff630000, 0xff000063, 0xff006300, 0xff00f800,
-				0xff0000f8, 0xfff80000, 0xff00ff00, 0xffff0000, 0xff0000ff,
-				0xff63f800, 0xff6300f8, 0xff0063f8, 0xfff86300, 0xfff80063,
-				0xff00f863, 0xfff8ff00, 0xfff800ff, 0xff00f8ff, 0xffff00f8,
-				0xff00fff8, 0xfffff800, 0xff0063ff, 0xff00ff63, 0xff6300ff,
-				0xff63ff00, 0xffff0063, 0xffff6300, 0xff63f8ff, 0xff63fff8,
-				0xfff863ff, 0xfff8ff63, 0xffff63f8, 0xfffff863 };
+		int colIndex;
+		int color[] = { 0xff000000, 0xff000055, 0xff0000aa, 0xff005500,
+				0xff005555, 0xff0055aa, 0xff00aa00, 0xff00aa55, 0xff00aaaa,
+				0xff550000, 0xff550055, 0xff5500aa, 0xff555500, 0xff555555,
+				0xff5555aa, 0xff55aa00, 0xff55aa55, 0xff55aaaa, 0xffaa0000,
+				0xffaa0055, 0xffaa00aa, 0xffaa5500, 0xffaa5555, 0xffaa55aa,
+				0xffaaaa00, 0xffaaaa55, 0xffaaaaaa };
 
 		public MyView(Context context) {
 			super(context);
@@ -201,9 +200,9 @@ public class Painting extends Activity implements
 			point2 = new PointF(0, 0);
 			curPoint = new PointF(0, 0);
 
-			colorIndex = 0;
-
 			textDisplay = new TextDisplay(width / 2, 0, width, 150);
+			int xCount = endValue - startValue + 1;
+			int yCount = 10;
 			float unit_h = (height - 50 - 300 - 30) / 20;
 			float unit_w = ((float) width) / (endValue - startValue + 1);
 			float h1 = 150;
@@ -212,8 +211,10 @@ public class Painting extends Activity implements
 			float h4 = h3 + 10 * unit_h;
 			axis = new AxisDisplay(0, (int) h2, width, (int) h3, unit_w,
 					startValue);
-			lineAxis = new LineAxis(0, (int) h1, width, (int) h2, unit_w,
-					unit_h, startValue, 0);
+
+			lineAxis = new LineAxis(0, (int) h1, width, (int) h2, xCount,
+					yCount, startValue, 0);
+
 			rectAxis = new HistogramAxis(0, (int) h3, width, (int) h4, unit_w,
 					unit_h, startValue, 0);
 
@@ -221,8 +222,17 @@ public class Painting extends Activity implements
 			textPaint.setColor(Color.BLACK);
 			textPaint.setStrokeWidth(1);
 			textPaint.setTextSize(13);
-			changeSkillDataToLine();
-			changeWorkToRect();
+
+			int size = paintdata.skills.size();
+			colIndex = 0;
+			for (int i = 0; i < size; i++) {
+				skillDataToLine(paintdata.skills.get(i), i);
+			}
+
+			size = paintdata.works.size();
+			for (int i = 0; i < size; i++) {
+				workToRect(paintdata.works.get(i));
+			}
 			changeBaseInfoToText();
 		}
 
@@ -253,9 +263,9 @@ public class Painting extends Activity implements
 				line.draw(canvas);
 				if (line.y1 == lineAxis.top + 20)
 					continue;
-				String text = "" + lineAxis.inversemap(line.x1, line.y1).score;
+				String text = "" + lineAxis.map(line.x1, line.y1).score;
 				canvas.drawText(text, line.x1, line.y1 - 10, textPaint);
-				text = "" + lineAxis.inversemap(line.x2, line.y2).score;
+				text = "" + lineAxis.map(line.x2, line.y2).score;
 				canvas.drawText(text, line.x2, line.y2 - 10, textPaint);
 			}
 			size = histograms.size();
@@ -269,7 +279,7 @@ public class Painting extends Activity implements
 			if (!curPoint.equals(0, 0)) {
 				canvas.drawCircle(curPoint.x, curPoint.y, 5, mPaint);
 				if (lineAxis.contains(curPoint.x, curPoint.y)) {
-					String text = lineAxis.inversemap(curPoint.x, curPoint.y)
+					String text = lineAxis.map(curPoint.x, curPoint.y)
 							.changeToString();
 					canvas.drawText(text, curPoint.x - 40, curPoint.y - 70,
 							textPaint);
@@ -370,81 +380,75 @@ public class Painting extends Activity implements
 			}
 		}
 
-		void changeSkillDataToLine() {
-			int size = paintdata.skills.size();
-			colorIndex = 0;
-			for (int i = 0; i < size; i++) {
-				Paint lineP = new Paint();
-				lineP.setColor(color[colorIndex++]);
-				lineP.setStrokeWidth(2);
-				SkillData skill = paintdata.skills.get(i);
-				float x0 = i * 30 + 20;
-				float y0 = lineAxis.top + 20;
-				float x_ = i * 20 + 20;
-				float y_ = -1;
-				int len = skill.length();
-				float[] time_score = skill.getTimeScore();
-				float x1, y1, x2, y2;
-				x1 = x2 = y1 = y2 = 0;
-				for (int j = 0; j < len - 1; j++) {
-					TimeScore timeScore = new TimeScore(time_score[j]);
-					PointF pt = lineAxis.map(timeScore);
-					x1 = pt.x;
-					y1 = pt.y;
-					timeScore = new TimeScore(time_score[j + 1]);
-					pt = lineAxis.map(timeScore);
-					x2 = pt.x;
-					y2 = pt.y;
-					lines.add(new Line(x1, y1, x2, y2, lineP));
-					if (y_ == -1) {
-						LineEquation equation = new LineEquation(x1, y1, x2, y2);
-						y_ = equation.getPoint_of_intersection(x_);
-					}
-					if (y_ == -1 && x1 > x0 && x2 > x0) {
-						y_ = y1;
-						x_ = x1;
-					}
-				}
-				if (y_ == -1) {
-					x_ = x2;
-					y_ = y2;
-				}
+		void skillDataToLine(SkillData skill, int count) {
+			Paint lineP = new Paint();
+			lineP.setColor(color[colIndex++]);
+			colIndex %= color.length;
+			lineP.setStrokeWidth(2);
 
-				Text t = new Text(skill.getName());
-				t.setLocation(x0, y0);
-				t.setPaint(textPaint);
-				texts.add(t);
-				Paint paint = new Paint(lineP);
-				paint.setStrokeWidth(1);
-				paint.setAlpha(50);
-				lines.add(new Line(x0, y0, x_, y_, paint));
+			float x0 = count * 30 + 20;
+			float y0 = lineAxis.top + 20;
+			float x_ = x0;
+			float y_ = -1;
+
+			int len = skill.length();
+			float[] time_score = skill.getTimeScore();
+			float x1, y1, x2, y2;
+			x1 = x2 = y1 = y2 = 0;
+			for (int j = 0; j < len - 1; j++) {
+				TimeScore timeScore = new TimeScore(time_score[j]);
+				PointF pt = lineAxis.inverseMap(timeScore);
+				x1 = pt.x;
+				y1 = pt.y;
+				timeScore = new TimeScore(time_score[j + 1]);
+				pt = lineAxis.inverseMap(timeScore);
+				x2 = pt.x;
+				y2 = pt.y;
+				lines.add(new Line(x1, y1, x2, y2, lineP));
+				if (y_ == -1) {
+					Equation equation = new Equation(x1, y1, x2, y2);
+					y_ = equation.getPoint_of_intersection(x_);
+				}
+				if (y_ == -1 && x1 > x0 && x2 > x0) {
+					y_ = y1;
+					x_ = x1;
+				}
 			}
+			if (y_ == -1) {
+				x_ = x2;
+				y_ = y2;
+			}
+
+			Text t = new Text(skill.getName());
+			t.setLocation(x0, y0);
+			t.setPaint(textPaint);
+			texts.add(t);
+			Paint paint = new Paint(lineP);
+			paint.setStrokeWidth(1);
+			paint.setAlpha(50);
+			lines.add(new Line(x0, y0, x_, y_, paint));
 		}
 
-		void changeWorkToRect() {
-			int size = paintdata.works.size();
-			for (int i = 0; i < size; i++) {
-				Paint rectPaint = new Paint();
-				rectPaint.setColor(color[colorIndex++]);
-				WorkData work = paintdata.works.get(i);
-				int time1 = work.getBeginTime();
-				int time2 = work.getEndTime();
-				int score = work.getScore();
-				TimeScore timescore1 = new TimeScore(time1 / 100, time1 % 100,
-						score);
-				TimeScore timescore2 = new TimeScore(time2 / 100, time2 % 100,
-						score);
-				PointF point = rectAxis.map(timescore1);
-				float x1 = point.x;
-				float y1 = point.y;
-				point = rectAxis.map(timescore2);
-				float x2 = point.x;
-				float y2 = point.y;
-				histograms.add(new Histogram(x1, rectAxis.top, x2, y2,
-						rectPaint));
-				texts.add(new Text(work.getName() + work.getCompany())
-						.setPaint(textPaint).setLocation(x1 + 5, y1 + 10));
-			}
+		void workToRect(WorkData work) {
+			Paint rectPaint = new Paint();
+			rectPaint.setColor(color[colIndex++]);
+			colIndex %= color.length;
+			int time1 = work.getBeginTime();
+			int time2 = work.getEndTime();
+			int score = work.getScore();
+			TimeScore timescore1 = new TimeScore(time1 / 100, time1 % 100,
+					score);
+			TimeScore timescore2 = new TimeScore(time2 / 100, time2 % 100,
+					score);
+			PointF point = rectAxis.map(timescore1);
+			float x1 = point.x;
+			float y1 = point.y;
+			point = rectAxis.map(timescore2);
+			float x2 = point.x;
+			float y2 = point.y;
+			histograms.add(new Histogram(x1, rectAxis.top, x2, y2, rectPaint));
+			texts.add(new Text(work.getName() + work.getCompany()).setPaint(
+					textPaint).setLocation(x1 + 5, y1 + 10));
 		}
 
 		void changeBaseInfoToText() {
@@ -455,7 +459,7 @@ public class Painting extends Activity implements
 			Paint paint = new Paint();
 			paint.setColor(Color.BLACK);
 			paint.setTextSize(20);
-			Text text = new Text(paintdata.name);
+			Text text = new Text(paintdata.name + "  " + paintdata.sex);
 			text.setPaint(paint);
 			text.setLocation(100, 30);
 			texts.add(text);
@@ -486,47 +490,14 @@ public class Painting extends Activity implements
 			SkillData skill = new SkillData();
 			skill.setName(str);
 			for (int i = 0; i < size; i++) {
-				TimeScore t = lineAxis.inversemap(points.get(i).x,
-						points.get(i).y);
+				TimeScore t = lineAxis.map(points.get(i).x, points.get(i).y);
 				float f = t.toFloat();
 				skill.add(f);
 			}
+
 			int s = paintdata.skills.size();
 			paintdata.skills.add(skill);
-			float x0 = s * 20 + 20;
-			float y0 = lineAxis.top + 20;
-			float x_ = s * 20 + 20;
-			float y_ = -1;
-			float x1, x2, y1, y2;
-			x1 = x2 = y1 = y2 = 0;
-			for (int i = 0; i < size - 1; i++) {
-				PointF point1 = points.get(i);
-				PointF point2 = points.get(i + 1);
-				x1 = point1.x;
-				y1 = point1.y;
-				x2 = point2.x;
-				y2 = point2.y;
-				lines.add(new Line(x1, y1, x2, y2, mPaint));
-				if (y_ == -1) {
-					LineEquation equation = new LineEquation(x1, y1, x2, y2);
-					y_ = equation.getPoint_of_intersection(x_);
-				}
-				if (y_ == -1 && x1 > x0 && x2 > x0) {
-					y_ = y1;
-					x_ = x1;
-				}
-			}
-			if (y_ == -1) {
-				x_ = x2;
-				y_ = y2;
-			}
-			Paint paint = new Paint(mPaint);
-			paint.setAlpha(50);
-			lines.add(new Line(x0, y0, x_, y_, paint));
-			Text t = new Text(skill.getName());
-			t.setLocation(x0, y0);
-			t.setPaint(textPaint);
-			texts.add(t);
+			skillDataToLine(skill, s);
 
 			points.clear();
 		}
@@ -551,15 +522,8 @@ public class Painting extends Activity implements
 			work.setEndTime(t.year * 100 + t.month);
 			work.setScore(t.score);
 			paintdata.works.add(work);
-			float x1 = point1.x;
-			float x2 = point2.x;
-			float y = point2.y;
-			histograms.add(new Histogram(x1, rectAxis.top, x2, y, mPaint));
 
-			Text text = new Text(str);
-			text.setPaint(textPaint);
-			text.setLocation(x1 + 5, y + 10);
-			texts.add(text);
+			workToRect(work);
 
 			point1.set(0, 0);
 			point2.set(0, 0);

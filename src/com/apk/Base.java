@@ -29,8 +29,8 @@ public class Base extends Activity {
 	EditText name_ed, phone_ed, addr_ed;
 	EditText job_ed, holi_ed, salary_ed;
 	EditText remark_ed;
-	Button btn, getPhoneBtn, timeBtn;
-	String name, birth, addr, phone, job, holiday, salary, time;
+	Button btn, getPhoneBtn, timeBtn, sexBtn;
+	String name, sex, birth, addr, phone, job, holiday, salary, time;
 	String remark;
 	ImageView image;
 	InputInterface parent;
@@ -54,6 +54,10 @@ public class Base extends Activity {
 		remark_ed = (EditText) findViewById(R.id.remark_edit);
 		timeBtn = (Button) findViewById(R.id.start_end_edit);
 		getPhoneBtn = (Button) findViewById(R.id.get_tel);
+		sexBtn = (Button)findViewById(R.id.sex_btn);
+		sexBtn.setText("male");
+		sex = "male";
+		sexBtn.setOnClickListener(l);
 		btn.setOnClickListener(l);
 		getPhoneBtn.setOnClickListener(l);
 		timeBtn.setOnClickListener(l);
@@ -76,7 +80,13 @@ public class Base extends Activity {
 						calendar.get(Calendar.DAY_OF_MONTH)).show();
 
 				break;
-
+			case R.id.sex_btn:
+				if(sex.equals("male"))
+					sex = "female";
+				else 
+					sex = "male";
+				sexBtn.setText(sex);
+				break;
 			case R.id.get_tel:
 				TelephonyManager tm = (TelephonyManager) Base.this
 						.getSystemService(Context.TELEPHONY_SERVICE);
@@ -152,6 +162,7 @@ public class Base extends Activity {
 			image.setImageBitmap(parent.photo);
 		MyJson myjson = parent.myData;
 		name = myjson.name;
+		sex = myjson.sex;
 		birth = myjson.birth;
 		addr = myjson.address;
 		phone = myjson.phone;
@@ -169,6 +180,7 @@ public class Base extends Activity {
 
 	private void init() {
 		name_ed.setText(name);
+		sexBtn.setText(sex);
 		phone_ed.setText(phone);
 		addr_ed.setText(addr);
 		timeBtn.setText(time);
@@ -197,6 +209,7 @@ public class Base extends Activity {
 		myjson.name = name;
 		myjson.birth = birth;
 		myjson.address = addr;
+		myjson.sex = sex;
 		myjson.phone = phone;
 		myjson.setTime(time);
 		myjson.job = job;

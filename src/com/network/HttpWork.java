@@ -2,11 +2,8 @@ package com.network;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLEncoder;
-
 import android.annotation.SuppressLint;
 import android.os.StrictMode;
 
@@ -70,33 +67,10 @@ public class HttpWork {
 	}
 
 	public String pushResume(String data) {
-		try {
-			data = URLEncoder.encode(data, "UTF-8");
-		} catch (UnsupportedEncodingException e1) {
-		}
-		String url = site + "/android/pushresume/" + data;
+		
 		String r = "";
-		try {
-			r = contactWithServer(url);
-		} catch (IOException e) {
-			r = "Can't save!";
-		}
 
-		return r;
-	}
 
-	public String update(String data) {
-		String r = "";
-		try {
-			data = URLEncoder.encode(data, "UTF-8");
-		} catch (UnsupportedEncodingException e1) {
-		}
-		String url = site + "/android/update/" + data;
-		try {
-			r = contactWithServer(url);
-		} catch (IOException e) {
-			r = "Can't save!";
-		}
 		return r;
 	}
 

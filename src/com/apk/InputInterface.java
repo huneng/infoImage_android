@@ -45,13 +45,14 @@ public class InputInterface extends TabActivity implements OnGestureListener {
 		getWindow().requestFeature(Window.FEATURE_NO_TITLE);
 
 		// get data from parent activity
-		Intent appIntent = getIntent();
-		String str = appIntent.getStringExtra("resume");
-		try {
-			myData = new MyJson(new JSONObject(str));
-		} catch (JSONException e) {
-		}
-		
+//		Intent appIntent = getIntent();
+//		String str = appIntent.getStringExtra("resume");
+//		try {
+//			myData = new MyJson(new JSONObject(str));
+//		} catch (JSONException e) {
+//			myData = new MyJson();
+//		}
+		myData = new MyJson();
 		resume = this;
 		hw = ResumeList.hw;
 		
@@ -107,10 +108,7 @@ public class InputInterface extends TabActivity implements OnGestureListener {
 							Toast.LENGTH_LONG).show();
 					return;
 				}
-				if(myData.id==-1)
-					b = hw.pushResume(b);
-				else
-					b = hw.update(b);
+				b = hw.pushResume(b);
 				
 				if (!b.equals("Can't save!"))
 					b = "Save successful!";
